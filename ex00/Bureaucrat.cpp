@@ -1,11 +1,5 @@
 #include "Bureaucrat.hpp"
 
-///////////////////////////////////
-
-//NO SE SI HAY QUE PONER MENSAJES DE CONTRUCTOR/DEST???????????
-
-///////////////////////////
-
 static const int kHighestGrade = 1;
 static const int kLowestGrade  = 150;
 
@@ -18,26 +12,22 @@ static void validateGrade(int grade)
 }
 Bureaucrat::Bureaucrat() : _name("default") , _grade(kLowestGrade)
 {
-    std::cout << "[C] default" << std::endl;
     ///Como _name es const, solo lo puedes asignar en la lista de inicializacion 
     //(lo que estas haciendo con : _name("default")). No puedes hacer dentro del cuerpo this->_name = ...; porque no compila.
 }
 
 Bureaucrat::Bureaucrat(const std::string& name, int grade) : _name(name) , _grade(grade) //un miembro const solo puede inicializarse al construir el objeto.
 {
-    std::cout << "[C] name and grade" << std::endl;
     validateGrade(this->_grade);
 }
 
 Bureaucrat::Bureaucrat(const Bureaucrat &to_copy) : _name(to_copy._name) , _grade(to_copy._grade)
 {
-    std::cout << "[C] copy" << std::endl;
     validateGrade(to_copy._grade); //????
 }
 
 Bureaucrat &Bureaucrat::operator=(const Bureaucrat &to_copy)
 {
-    std::cout << "Copy assignment operator" << std::endl;
     if (this != &to_copy)
     {
         // _name es const: NO se puede copiar asi que copiamos solo el grade
@@ -49,7 +39,6 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &to_copy)
 
 Bureaucrat::~Bureaucrat()
 {
-    std::cout << "[D]" << std::endl;
 }
 
 // ===== Getters =====
