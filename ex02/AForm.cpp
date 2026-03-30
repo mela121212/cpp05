@@ -7,9 +7,9 @@ static const int kLowestGrade  = 150;
 static void validateGrade(int grade)
 {
     if (grade < kHighestGrade)
-        throw Form::GradeTooHighException();
+        throw AForm::GradeTooHighException();
     if (grade > kLowestGrade)
-        throw Form::GradeTooLowException();
+        throw AForm::GradeTooLowException();
 }
 
 AForm::AForm() : _name("default") , _isSigned(false) , _gradeToSign(kLowestGrade) , _gradeToExecute(kLowestGrade)
@@ -63,7 +63,7 @@ int AForm::getGradeToExecute() const
 void AForm::beSigned(const Bureaucrat& b)
 {
     if (b.getGrade() > this->_gradeToSign)
-        throw Form::GradeTooLowException();
+        throw AForm::GradeTooLowException();
     this->_isSigned = true;
 }
 
@@ -75,6 +75,11 @@ const char* AForm::GradeTooHighException::what() const throw()
 const char* AForm::GradeTooLowException::what() const throw()
 {
     return "Form grade too low";
+}
+
+const char* AForm::NotSignedException::what() const throw()
+{
+	return ("Form can not be executed, because it is not signed");
 }
 
 std::ostream& operator<<(std::ostream& os, const AForm& f)

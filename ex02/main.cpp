@@ -1,39 +1,50 @@
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+#include "AForm.hpp"
 #include <iostream>
+#include "ShrubberyCreationForm.hpp"
+#include "RobotomyRequestForm.hpp"
+#include "PresidentialPardonForm.hpp"
+
 
 int main()
 {
-    std::cout << "=== OK sign ===\n";
-    Bureaucrat boss("Boss", 1);
-    Form f1("TopSecret", 10, 10);
-    std::cout << boss << std::endl;
-    std::cout << f1 << std::endl;
-    boss.signForm(f1);
-    std::cout << f1 << std::endl;
-
-    std::cout << "\n=== FAIL sign (grade too low) ===\n";
-    Bureaucrat intern("Intern", 150);
-    Form f2("Important", 100, 100);
-    intern.signForm(f2);
-    std::cout << f2 << std::endl;
-
-    std::cout << "\n=== Invalid Form grades (constructor throws) ===\n";
-    try
+    // 1) Ejecutar sin firmar (debe fallar: NotSignedException)
     {
-        Form bad1("Bad", 0, 10);
+        Bureaucrat boss("Boss", 1);
+        PresidentialPardonForm f("Arthur Dent");
+
+        std::cout << "\n[CASE 1] execute without signing\n";
+        boss.executeForm(f);
     }
-    catch (std::exception& e)
-    { 
-        std::cout << "bad1: " << e.what() << std::endl;
+
+    // 2) Firmar con grade demasiado bajo (necesita <= 25)
+    {
+        Bureaucrat low("Low", 150);
+        PresidentialPardonForm f("Ford Prefect");
+
+        std::cout << "\n[CASE 2] sign with low grade\n";
+        low.signForm(f);
     }
-    try 
-    { 
-        Form bad2("Bad", 10, 151); 
+
+    // 3) Firmar OK pero ejecutar con grade demasiado bajo (exec necesita <= 5)
+    {
+        Bureaucrat signer("Signer", 25);   // puede firmar
+        Bureaucrat execLow("ExecLow", 6);  // NO puede ejecutar (6 > 5)
+        PresidentialPardonForm f("Trillian");
+
+        std::cout << "\n[CASE 3] sign OK, execute with insufficient grade\n";
+        signer.signForm(f);
+        execLow.executeForm(f);            // debe fallar GradeTooLowException
     }
-    catch (std::exception& e) 
-    { 
-        std::cout << "bad2: " << e.what() << std::endl; 
+
+    // 4) Firmar y ejecutar OK
+    {
+        Bureaucrat boss("Boss", 1);
+        PresidentialPardonForm f("Marvin");
+
+        std::cout << "\n[CASE 4] sign and execute OK\n";
+        boss.signForm(f);
+        boss.executeForm(f);               // imprime el pardon
     }
 
     return 0;

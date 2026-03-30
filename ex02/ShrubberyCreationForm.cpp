@@ -2,25 +2,28 @@
 #include "Bureaucrat.hpp"
 #include <fstream>
 
-ShrubberyCreationForm::ShrubberyCreationForm()
-: AForm("ShrubberyCreationForm", 145, 137), _target("default") {}
+ShrubberyCreationForm::ShrubberyCreationForm() : AForm("ShrubberyCreationForm", 145, 137), _target("default") {}
 
-ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
-: AForm("ShrubberyCreationForm", 145, 137), _target(target) {}
+ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target) : AForm("ShrubberyCreationForm", 145, 137), _target(target) {}
 
-ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm& o)
-: AForm(o), _target(o._target) {}
+ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm& to_copy) : AForm(to_copy), _target(to_copy._target) {}
 
-ShrubberyCreationForm& ShrubberyCreationForm::operator=(const ShrubberyCreationForm& o)
+ShrubberyCreationForm& ShrubberyCreationForm::operator=(const ShrubberyCreationForm& to_copy)
 {
-    if (this != &o) {
-        AForm::operator=(o);
-        _target = o._target;
+    if (this != &to_copy)
+    {
+        AForm::operator=(to_copy);
+        _target = to_copy._target;
     }
     return *this;
 }
 
 ShrubberyCreationForm::~ShrubberyCreationForm() {}
+
+const char* ShrubberyCreationForm::FileOpenException::what() const throw()
+{
+	return "ShrubberyCreationForm: could not open output file";
+}
 
 void ShrubberyCreationForm::execute(Bureaucrat const& executor) const
 {
@@ -31,10 +34,8 @@ void ShrubberyCreationForm::execute(Bureaucrat const& executor) const
 
     const std::string filename = _target + "_shrubbery";
     std::ofstream out(filename.c_str());
-    if (!out) {
-        // Si tu subject no define excepción para esto, puedes lanzar std::runtime_error
-        throw std::runtime_error("could not open output file");
-    }
+    if (!out.is_open())
+        throw FileOpenException();
 
     out <<
         "       _-_\n"
@@ -47,3 +48,5 @@ void ShrubberyCreationForm::execute(Bureaucrat const& executor) const
         "  _ -  | |   -_\n"
         "      // \\\\\n";
 }
+
+//TENGO QUE CONTROLAR EL FALLO DE OPEN FILE CON UNAS EXCEPTION??

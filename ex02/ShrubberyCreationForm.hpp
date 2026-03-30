@@ -11,12 +11,18 @@ class ShrubberyCreationForm : public AForm
 
     public:
         ShrubberyCreationForm();
-        explicit ShrubberyCreationForm(const std::string& target);
-        ShrubberyCreationForm(const ShrubberyCreationForm& o);
-        ShrubberyCreationForm& operator=(const ShrubberyCreationForm& o);
+        ShrubberyCreationForm(const std::string& target);
+        ShrubberyCreationForm(const ShrubberyCreationForm &to_copy);
+        ShrubberyCreationForm& operator=(const ShrubberyCreationForm &to_copy);
         virtual ~ShrubberyCreationForm();
 
-        void execute(Bureaucrat const& executor) const override;
+        void execute(Bureaucrat const& executor) const;
+
+        class FileOpenException : public std::exception 
+        {
+            public:
+                const char* what() const throw();
+        };
 };
 
 #endif
