@@ -1,51 +1,39 @@
 #include "Bureaucrat.hpp"
 #include "AForm.hpp"
-#include <iostream>
 #include "ShrubberyCreationForm.hpp"
 #include "RobotomyRequestForm.hpp"
 #include "PresidentialPardonForm.hpp"
 
-
 int main()
 {
-    // 1) Ejecutar sin firmar (debe fallar: NotSignedException)
-    {
-        Bureaucrat boss("Boss", 1);
-        PresidentialPardonForm f("Arthur Dent");
+    std::srand(static_cast<unsigned int>(std::time(NULL)));
 
-        std::cout << "\n[CASE 1] execute without signing\n";
-        boss.executeForm(f);
+    Bureaucrat boss("Boss", 1);
+    Bureaucrat low("Intern", 150);
+
+    ShrubberyCreationForm   s("Shrubb");
+    RobotomyRequestForm     r("Robot");
+    PresidentialPardonForm  p("Presi");
+
+    std::cout << "\n--- Shrubbery ---\n";
+    boss.executeForm(s);   // not signed -> fail
+    low.signForm(s);       // too low -> fail (needs 145)
+    boss.signForm(s);      // ok
+    boss.executeForm(s);   // ok -> creates home_shrubbery
+
+    std::cout << "\n--- Robotomy ---\n";
+    boss.executeForm(r);   // not signed -> fail
+    boss.signForm(r);      // ok
+    for (int i = 1; i <= 10; ++i)
+    {
+        std::cout << "Try " << i << ": ";
+        boss.executeForm(r); // 50/50
     }
 
-    // 2) Firmar con grade demasiado bajo (necesita <= 25)
-    {
-        Bureaucrat low("Low", 150);
-        PresidentialPardonForm f("Ford Prefect");
-
-        std::cout << "\n[CASE 2] sign with low grade\n";
-        low.signForm(f);
-    }
-
-    // 3) Firmar OK pero ejecutar con grade demasiado bajo (exec necesita <= 5)
-    {
-        Bureaucrat signer("Signer", 25);   // puede firmar
-        Bureaucrat execLow("ExecLow", 6);  // NO puede ejecutar (6 > 5)
-        PresidentialPardonForm f("Trillian");
-
-        std::cout << "\n[CASE 3] sign OK, execute with insufficient grade\n";
-        signer.signForm(f);
-        execLow.executeForm(f);            // debe fallar GradeTooLowException
-    }
-
-    // 4) Firmar y ejecutar OK
-    {
-        Bureaucrat boss("Boss", 1);
-        PresidentialPardonForm f("Marvin");
-
-        std::cout << "\n[CASE 4] sign and execute OK\n";
-        boss.signForm(f);
-        boss.executeForm(f);               // imprime el pardon
-    }
+    std::cout << "\n--- Pardon ---\n";
+    boss.executeForm(p);   // not signed -> fail
+    boss.signForm(p);      // ok
+    boss.executeForm(p);   // ok -> prints pardon
 
     return 0;
 }

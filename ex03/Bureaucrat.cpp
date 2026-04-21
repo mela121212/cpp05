@@ -30,7 +30,11 @@ Bureaucrat &Bureaucrat::operator=(const Bureaucrat &to_copy)
     return *this;
 }
 
-Bureaucrat::~Bureaucrat() {}
+Bureaucrat::~Bureaucrat()
+{
+}
+
+// ===== Getters =====
 
 const std::string& Bureaucrat::getName() const
 {
@@ -42,19 +46,51 @@ int Bureaucrat::getGrade() const
     return this->_grade;
 }
 
+// ===== Operaciones =====
+
 void Bureaucrat::incrementGrade()
 {
-    int newGrade = this->_grade - 1;
+    int newGrade = this->_grade - 1; // 3 -> 2
     validateGrade(newGrade);
     this->_grade = newGrade;
 }
 
 void Bureaucrat::decrementGrade()
 {
-    int newGrade = this->_grade + 1;
+    int newGrade = this->_grade + 1; // 3 -> 4
     validateGrade(newGrade);
     this->_grade = newGrade;
 }
+
+void Bureaucrat::signForm(AForm& f)
+{
+    try
+    {
+        f.beSigned(*this);
+        std::cout << this->getName() << " signed " << f.getName() << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cout << this->getName() << " couldn’t sign " << f.getName()
+                  << " because " << e.what() << "." << std::endl;
+    }
+}
+
+void Bureaucrat::executeForm(AForm const& form) const
+{
+    try
+    {
+        form.execute(*this);
+        std::cout << this->getName() << " executed " << form.getName() << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cout << this->getName() << " couldn’t execute " << form.getName()
+                  << " because " << e.what() << std::endl;
+    }
+}
+
+// ===== Exceptions what() =====
 
 const char* Bureaucrat::GradeTooHighException::what() const throw()
 {

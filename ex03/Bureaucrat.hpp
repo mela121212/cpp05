@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <exception>
+#include "AForm.hpp"
 
 class Bureaucrat 
 {
@@ -20,13 +21,18 @@ class Bureaucrat
         Bureaucrat &operator=(const Bureaucrat &to_copy);
         ~Bureaucrat();
 
+        //getters
         const std::string& getName() const;
         int               getGrade() const;
 
-        void incrementGrade();
-        void decrementGrade();
+        // operaciones
+        void incrementGrade(); // subir "rango": baja (3 -> 2)
+        void decrementGrade(); // bajar "rango": sube (3 -> 4)
+        void signForm(AForm& f);
+        void executeForm(AForm const& form) const;
 
-        class GradeTooHighException : public std::exception
+        //clases anidadas
+        class GradeTooHighException : public std::exception //hereda de exception el metodo what virtual
         {
             public:
                 virtual const char* what() const throw();
